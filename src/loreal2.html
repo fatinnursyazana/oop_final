@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Makeup Data CRUD</title>
+    <style>
+        body {
+            background-color: khaki;
+            font-family: monospace;
+            text-align: center;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        table {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background-color: rgb(219, 255, 146);
+        }
+
+        th {
+            background-color: OliveDrab;
+            color: rgb(0, 0, 0);
+            text-align: left;
+            padding: 10px;
+        }
+
+        td {
+            padding: 10px;
+            border: 1px solid rgb(0, 0, 0)e7e;
+        }
+
+        td[contenteditable="true"]:hover {
+            background-color: OliveDrab;
+        }
+
+        button {
+            background-color: MediumAquaMarine;
+            color: rgb(0, 0, 0);
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border: solid green;
+        }
+
+        button:hover {
+            background-color: LightSeaGreen;
+        }
+
+        .go-back-button {
+            background-color: OliveDrab;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border: solid khaki;
+        }
+    </style>
+</head>
+<body>
+    <h1>Makeup Data</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="makeup-table">
+            <!-- Existing makeup data will be loaded here -->
+        </tbody>
+    </table>
+
+    <script>
+        // Load saved makeup data from local storage
+        function loadMakeupData() {
+            const makeupTable = document.getElementById('makeup-table');
+            const savedData = JSON.parse(localStorage.getItem('makeupData')) || [];
+
+            savedData.forEach(data => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td contenteditable="true">${data.description}</td>
+                    <td contenteditable="true">${data.price}</td>
+                    <td>
+                        <button onclick="updateData(this)">Update</button>
+                        <button onclick="deleteData(this)">Delete</button>
+                    </td>
+                `;
+                makeupTable.appendChild(row);
+            });
+        }
+
+        // Save makeup data to local storage
+        function saveMakeupData() {
+            const makeupData = [];
+            const rows = document.querySelectorAll('#makeup-table tr');
+
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const description = cells[0].textContent;
+                const price = cells[1].textContent;
+                makeupData.push({ description, price });
+            });
+
+            localStorage.setItem('makeupData', JSON.stringify(makeupData));
+        }
+
+        // Function to update makeup data
+        function updateData(button) {
+            saveMakeupData(); // Save the data before updating
+            // Add your update logic here...
+
+            // Clear the table
+            const makeupTable = document.getElementById('makeup-table');
+            makeupTable.innerHTML = '';
+
+            // Load saved makeup data again after the update
+            loadMakeupData();
+        }
+
+        // Function to delete makeup data
+        function deleteData(button) {
+            button.parentElement.parentElement.remove();
+            saveMakeupData(); // Save the data after deleting
+        }
+
+        // Example: Adding sample makeup data
+        const exampleRow = document.createElement('tr');
+        exampleRow.innerHTML = `
+            <td contenteditable="true">The ultimate in luminosity. LOréal Paris introduces its first liquid highlighter specifically crafted to highlight key features or illuminate all-over. Designed in Golden, Rose, and Ice shades that flatter every skintone from warm to neutral to cool. Features:Golden Illuminator enhances peachy or yellow tones in warm skintonesRose Illuminator enhances yellow, peachy, pink or blue tones in neutral skintonesIce Illuminator enhances pink or blue tones in cool skintonesHighlight key features or illuminate all-overLightweight formulaFor every skintone & undertone.</td>
+            <td contenteditable="true">RM 16.99</td>
+            <td>
+                <button onclick="updateData(this)">Update</button>
+                <button onclick="deleteData(this)">Delete</button>
+            </td>
+        `;
+        document.getElementById('makeup-table').appendChild(exampleRow);
+
+        // Load existing data on page load
+        loadMakeupData();
+    </script>
+    <br>
+    <br>
+    <br>
+    <a href="javascript:history.go(-1);" class="go-back-button">Go Back</a>
+</body>
+</html>
